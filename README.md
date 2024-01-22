@@ -27,8 +27,6 @@ This repository is the server companion repository to the client repository for 
 
 The following multiplayer test is leveraging the Colyseus multiplayer tutorial below but instead of having the server (Colyseus web server) and client (Phaser game engine) programs running locally on the same computer, we will have the server actually be on a separate computer (can be a cloud instance or just another computer in your network at home).
 
-You can find the original tutorial that installs everything on your local computer at: https://github.com/colyseus/tutorial-phaser
-
 [![.img/fig1_architecture.png](.img/fig1_architecture.png)](#nolink)
 
 As seen above with multiple client computers connecting to a single server, we will:
@@ -59,59 +57,33 @@ As seen above with multiple client computers connecting to a single server, we w
 ## 2. Server Installation
 
 * We are adapting the Colyseus tutorial to work on a cloud instance server
-    * For this tutorial, the cloud instance server is set up with Ubuntu, Docker, and `ufw`
-    * Create a new directory `tutorial-phaser`, `cd` into it and create the Dockerfile below: 
-
-```dockerfile
-FROM node:20
-RUN apt update && apt -y upgrade
-RUN apt install -y wget nano tmux htop curl git
-RUN git clone https://github.com/colyseus/tutorial-phaser.git
-WORKDIR "/tutorial-phaser/server"
-RUN npm install
-RUN npm audit fix
-EXPOSE 2567
-```
-
-* We'll build the Docker image, start up a container with the container's port 2567 mapped to the cloud instance's port 2567, and navigate within to start a tmux session and start the Colyseus server
+* For this tutorial, the cloud instance server is set up with Ubuntu
 
 ```bash
-$ docker image build --network host -t tutorial_image .
-$ docker run -dit --restart always -p 2567:2567 --name tutorial_container tutorial_image
-$ docker exec -it tutorial_container /bin/bash
-# tmux new -s tutorial
-# npm start
-```
-
-* We are now done with setting up the server
-* If you leave the `tmux` session open, you will see in the server console when players joing this server
-
-[Back to Top](#table-of-contents)
-
-----------------------------------------------------------------------------
-
-## 3. Client Installation
-
-* For this tutorial, the client computer is set up with Windows 10 and Windows Subsystem for Linux (Ubuntu)
-* On the client computer, you will need to:
-    * Clone the git repos
-    * Install Node
-
-```bash
-$ cd /mnt/d/Users/Athit\ Kao/Desktop/
+$ cd ~
 $ git clone https://github.com/colyseus/tutorial-phaser.git
 $ cd tutorial-phaser
 $ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
-## IMPORTANT: Exit and log back in so that `command -v nvm` returns `nvm`
+```
 
+* IMPORTANT: You must exit and log back into your Linux user so that some changes take effect
+* Once you log back in, we will confirm that no prior version of Node was installed and install Node
+
+```bash
 $ nvm ls
-## This should list the following meaning that no prior versions of Node are installed
+## This should list the following results, meaning that no prior versions of Node are installed
             N/A
 iojs -> N/A (default)
 node -> stable (-> N/A) (default)
 unstable -> N/A (default)
 
+## This may take a few minutes to install
 $ nvm install --lts
+```
+
+* Once Node is installed, see if all the software is ready by checking their versions and where they are located
+
+```bash
 ## The following should return the versions and where they are located
 $ node --version
 v20.11.0
@@ -121,15 +93,71 @@ $ which node
 ~/.nvm/versions/node/v20.11.0/bin/node
 evo@EVO:~$ which npm
 ~/.nvm/versions/node/v20.11.0/bin/npm
+```
 
-## Now in a different tab if you didn't tmux this
-$ cd /mnt/d/Users/Athit\ Kao/Desktop/tutorial-phaser/client
+* We will now install the Colyseus server
+
+```
+$ cd ~/tutorial-phaser/server
+$ npm install
+$ npm audit fix
+$ npm start
+## The server should be listening on port 2567
+```
+
+### Firewall
+
+* You may need to open port 2567 on the server, here we are using the UncomplicatedFirewall (`ufw`)
+
+```bash
+$ sudo ufw status
+$ sudo ufw allow 2567
+$ sudo ufw status # Double-check port 2567 is now allowed
+```
+
+[Back to Top](#table-of-contents)
+
+----------------------------------------------------------------------------
+
+## 3. Client Installation
+
+* For this tutorial, the client computer is set up with Windows 10 and Windows Subsystem for Linux (Ubuntu)
+* On the client computer, you will perform almost identical actions as the server instalation:
+    * Clone the git repos
+    * Install Node
+    * Start client Phaser code
+
+```bash
+$ cd ~
+$ git clone https://github.com/colyseus/tutorial-phaser.git
+$ cd tutorial-phaser
+$ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
+## IMPORTANT: You must exit and log back into your Linux user so that some changes take effect
+
+$ nvm ls
+            N/A
+iojs -> N/A (default)
+node -> stable (-> N/A) (default)
+unstable -> N/A (default)
+
+$ nvm install --lts
+
+$ node --version
+v20.11.0
+$ npm --version
+10.2.4
+$ which node
+~/.nvm/versions/node/v20.11.0/bin/node
+evo@EVO:~$ which npm
+~/.nvm/versions/node/v20.11.0/bin/npm
+
+$ cd ~/tutorial-phaser/client
 $ npm install
 $ npm audit fix
 ```
 
 * We will now need to let the client know what the server's IP address is
-* In client file `tutorial-phaser\client\src\backend.ts`, change line 3 from `localhost` to your server's IP address:
+* In client file `~\tutorial-phaser\client\src\backend.ts`, change line 3 from `localhost` to your server's IP address:
 
 ```bash
 3    : "ws://localhost:2567"
@@ -147,8 +175,12 @@ to
 $ npm start
 ```
 
-* The client should be running on port 1234; so open a web browser and go to http://localhost:1234
-* NOTE: An additional player appears in the room (picking options 1-4 corresponds to different rooms) for every browser tab you have visiting the client
+The client should be running on port 1234; so open a web browser and go to http://localhost:1234 to see the multiplayer server in action!
+
+
+[![.img/fig2_multiplayer.png](.img/fig2_multiplayer.png)](#nolink)
+
+NOTE: Additional players appear in the room (picking options 1-4 corresponds to different rooms) for every browser tab you have visiting the Phaser client (http://localhost:1234)
 
 [Back to Top](#table-of-contents)
 
@@ -167,15 +199,44 @@ Issue | Solution
 
 ## Other Resources
 
-### Firewall
+### Single Computer Installation
 
-* You may need to open port 2567 on the server, here we are using `ufw`
+The original Colyseum tutorial installs both server and client on the same local computer. Since it is typically not advised to open your personal computer's ports to others, others should not connect to your computer for multiplayer capability.
+
+[![.img/figs1_architecture.png](.img/figs1_architecture.png)](#nolink)
+
+The instructions presented here have been adapted from that single-computer Colyseum tutorial which can be found at: https://github.com/colyseus/tutorial-phaser
+
+### Containerization
+
+* If you would like to containerize your server, you must have Docker installed
+    * More info about Docker here: https://github.com/atet/learn/tree/master/virtual
+* Create a new directory `tutorial-phaser`, `cd` into it and create the Dockerfile below: 
+    * NOTE: There may be many different ways to install Node.js through Dockerfile, but it is easiest to just use the offical Node Docker image
+
+```dockerfile
+FROM node:20
+RUN apt update && apt -y upgrade
+RUN apt install -y wget nano tmux htop curl git
+RUN git clone https://github.com/colyseus/tutorial-phaser.git
+WORKDIR "/tutorial-phaser/server"
+RUN npm install
+RUN npm audit fix
+EXPOSE 2567
+```
+
+* We'll build the Docker image, start up a container with the container's port 2567 mapped to the cloud instance's port 2567, and navigate within the container to start a `tmux` session and start the Colyseus server
 
 ```bash
-$ sudo ufw status
-$ sudo ufw allow 2567
-$ sudo ufw status # Double-check port 2567 is now allowed
+$ docker image build --network host -t tutorial_image .
+$ docker run -dit --restart always -p 2567:2567 --name tutorial_container tutorial_image
+$ docker exec -it tutorial_container /bin/bash
+# tmux new -s tutorial
+# npm start
 ```
+
+* We are now done with setting up the server container
+* If you leave the `tmux` session open, you will see in the server console when players joing this server
 
 [Back to Top](#table-of-contents)
 
