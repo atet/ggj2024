@@ -25,13 +25,15 @@ This repository is the server companion repository to the client repository for 
 
 ## 0. Preface
 
-The following multiplayer test is leveraging the Colyseus multiplayer tutorial but instead of having the server and client programs running locally on the same computer, we will have the server actually be on a cloud-hosted server (or another computer in your network).
+The following multiplayer test is leveraging the Colyseus multiplayer tutorial below but instead of having the server (Colyseus web server) and client (Phaser game engine) programs running locally on the same computer, we will have the server actually be on a separate computer (can be a cloud instance or just another computer in your network at home).
 
-You can find this tutorial at: https://github.com/colyseus/tutorial-phaser
+You can find the original tutorial that installs everything on your local computer at: https://github.com/colyseus/tutorial-phaser
 
-High-level is we will:
+[![.img/fig1_architecture.png](.img/fig1_architecture.png)](#nolink)
+
+As seen above with multiple client computers connecting to a single server, we will:
 1. Install the server that multiple players will communicate to in the cloud
-2. Install all the client software locally that connects to the tutorial game to the server
+2. Install all the client software locally that connects to the server
 
 [Back to Top](#table-of-contents)
 
@@ -42,12 +44,13 @@ High-level is we will:
 ### Client: Local Computer
 
 * Any computer made in the last decade should do
-* This tutorial was developed on WIndows 10 with Windows Subsystem for Linux 2
+* This tutorial was developed on Windows 10 with Windows Subsystem for Linux 2 (WSL 2)
 
 ### Server: Cloud Instance or Separate Computer in Network
 
-* TODO: Instuctions to provision a cloud instance with Docker, some information here: https://github.com/atet/ggj2022?tab=readme-ov-file#5-next-steps
-* NOTE: ***You must have the IP address of your server for a later step***
+* Instuctions to provision a Linux cloud instance can be found here: https://github.com/atet/ggj2022?tab=readme-ov-file#5-next-steps
+* If you end up using another computer within your home network, ensure there is a Linux operating system on it; if it's a Windows 10/11 computer, ensure it has WSL 2
+* NOTE: ***Write down the IP address of your server for a later step***
 
 [Back to Top](#table-of-contents)
 
@@ -55,9 +58,9 @@ High-level is we will:
 
 ## 2. Server Installation
 
-* We are adapting the Colyseus tutorial to work on a cloud instance server with containerization
+* We are adapting the Colyseus tutorial to work on a cloud instance server
     * For this tutorial, the cloud instance server is set up with Ubuntu, Docker, and `ufw`
-    * NOTE: Tried many different ways to install Node.js through Dockerfile; just use the offical Node Docker image
+
     * Create a new directory `tutorial-phaser`, `cd` into it and create the Dockerfile below: 
 
 ```dockerfile
