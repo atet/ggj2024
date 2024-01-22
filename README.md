@@ -60,7 +60,6 @@ As seen above with multiple client computers connecting to a single server, we w
 
 * We are adapting the Colyseus tutorial to work on a cloud instance server
     * For this tutorial, the cloud instance server is set up with Ubuntu, Docker, and `ufw`
-
     * Create a new directory `tutorial-phaser`, `cd` into it and create the Dockerfile below: 
 
 ```dockerfile
@@ -72,14 +71,6 @@ WORKDIR "/tutorial-phaser/server"
 RUN npm install
 RUN npm audit fix
 EXPOSE 2567
-```
-
-* We will need to open the port 2567 on the server, here we are using `ufw`
-
-```bash
-$ sudo ufw status
-$ sudo ufw allow 2567
-$ sudo ufw status # Double-check port 2567 is now allowed
 ```
 
 * We'll build the Docker image, start up a container with the container's port 2567 mapped to the cloud instance's port 2567, and navigate within to start a tmux session and start the Colyseus server
@@ -167,6 +158,7 @@ $ npm start
 
 Issue | Solution
 --- | ---
+**"Cannot connect to server/client!"** | You may also have to adjust your firewall settings to allow port 2567 (on the server) to be accessed externally, see [Firewall](#firewall)
 **"It's not working!"** | This concise tutorial has distilled hours of sweat, tears, and troubleshooting; _it can't not work_
 
 [Back to Top](#table-of-contents)
@@ -174,6 +166,16 @@ Issue | Solution
 ----------------------------------------------------------------------------
 
 ## Other Resources
+
+### Firewall
+
+* You may need to open port 2567 on the server, here we are using `ufw`
+
+```bash
+$ sudo ufw status
+$ sudo ufw allow 2567
+$ sudo ufw status # Double-check port 2567 is now allowed
+```
 
 [Back to Top](#table-of-contents)
 
