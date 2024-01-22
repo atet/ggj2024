@@ -56,8 +56,9 @@ As seen above with multiple client computers connecting to a single server, we w
 
 ## 2. Server Installation
 
-* We are adapting the Colyseus tutorial to work on a cloud instance server
-* For this tutorial, the cloud instance server is set up with Ubuntu
+* For this tutorial, we are adapting the Colyseus tutorial to work on a remote server
+* This tutorial used a cloud instance server set up with Ubuntu operating system
+* SSH into your remote server and run the following commands:
 
 ```bash
 $ cd ~
@@ -66,7 +67,7 @@ $ cd tutorial-phaser
 $ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
 ```
 
-* IMPORTANT: You must exit and log back into your Linux user so that some changes take effect
+* **IMPORTANT: You must exit and log back into your Linux user so that some changes take effect**
 * Once you log back in, we will confirm that no prior version of Node was installed and install Node
 
 ```bash
@@ -95,19 +96,34 @@ evo@EVO:~$ which npm
 ~/.nvm/versions/node/v20.11.0/bin/npm
 ```
 
-* We will now install the Colyseus server
+* We will now install and run the Colyseus server
 
 ```
 $ cd ~/tutorial-phaser/server
 $ npm install
 $ npm audit fix
 $ npm start
-## The server should be listening on port 2567
+       ___      _
+      / __\___ | |_   _ ___  ___ _   _ ___
+     / /  / _ \| | | | / __|/ _ \ | | / __|
+    / /__| (_) | | |_| \__ \  __/ |_| \__ \
+    \____/\___/|_|\__, |___/\___|\__,_|___/
+                  |___/
+
+Multiplayer Framework for Node.js · Open-source
+
+__ Sponsor Colyseus on GitHub _ https://github.com/sponsors/endel
+__ Give it a star on GitHub _ https://github.com/colyseus/colyseus
+_  Deploy and scale your project on Colyseus Cloud _ https://cloud.colyseus.io
+
+_  Listening on http://localhost:2567
 ```
+
+**The server is now listening on port 2567 and ready for connections**
 
 ### Firewall
 
-* You may need to open port 2567 on the server, here we are using the UncomplicatedFirewall (`ufw`)
+You may need to open port 2567 on the server, here we are using the UncomplicatedFirewall (`ufw`):
 
 ```bash
 $ sudo ufw status
@@ -123,7 +139,7 @@ $ sudo ufw status # Double-check port 2567 is now allowed
 
 * For this tutorial, the client computer is set up with Windows 10 and Windows Subsystem for Linux (Ubuntu)
 * On the client computer, you will perform almost identical actions as the server instalation:
-    * Clone the git repos
+    * Clone the Colyseus & Phaser tutorial `git` repos
     * Install Node
     * Start client Phaser code
 
@@ -173,9 +189,15 @@ to
 
 ```bash
 $ npm start
+
+> client@1.0.0 start
+> parcel serve index.html
+
+Server running at http://localhost:1234
+✨ Built in 16ms
 ```
 
-The client should be running on port 1234; so open a web browser and go to http://localhost:1234 to see the multiplayer server in action!
+**The client should be running on port 1234; so open a web browser and go to http://localhost:1234 to see the multiplayer server in action!**
 
 
 [![.img/fig2_multiplayer.png](.img/fig2_multiplayer.png)](#nolink)
@@ -190,6 +212,7 @@ NOTE: Additional players appear in the room (picking options 1-4 corresponds to 
 
 Issue | Solution
 --- | ---
+**"Installed Phaser client on server and cannot connect to server through game"** | "Headless" Phaser configuration is not covered here, see [Headless Phaser](#headless-phaser) for more info
 **"Cannot connect to server/client!"** | You may also have to adjust your firewall settings to allow port 2567 (on the server) to be accessed externally, see [Firewall](#firewall)
 **"It's not working!"** | This concise tutorial has distilled hours of sweat, tears, and troubleshooting; _it can't not work_
 
@@ -237,6 +260,11 @@ $ docker exec -it tutorial_container /bin/bash
 
 * We are now done with setting up the server container
 * If you leave the `tmux` session open, you will see in the server console when players joing this server
+
+### Headless Phaser
+
+* The current instructions must have the client program running locally, otherwise you will have to adapt the Phaser game engine for "headless" operation
+    * More info here: https://medium.com/@16patsle/running-phaser-3-on-the-server-4c0d09ffd5e6
 
 [Back to Top](#table-of-contents)
 
